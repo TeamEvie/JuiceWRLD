@@ -11,7 +11,7 @@ export const client = new EvieClient();
 
 client.fetchPrefix = () => "slashies.";
 
-console.log(`Root folder: ${rootFolder}`);
+console.log(`CWD: ${process.cwd()}`);
 
 if (process.env.SENTRY_URL) {
   Sentry.init({
