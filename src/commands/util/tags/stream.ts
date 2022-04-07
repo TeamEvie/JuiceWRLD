@@ -11,13 +11,17 @@ export class Stream extends Command {
   public override async chatInputRun(
     interaction: CommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) return;
     // https://discordjs.guide/voice/audio-player.html#playing-audio
-
-    await ReplyStatusEmbed(
-      StatusEmoji.SUCCESS,
-      "woah! you successfully stole evie's source code and removed everything but the utils folder!",
-      interaction
-    );
+    try {
+      const status = await interaction.client.radio.subscribeToGenre(
+        "leaks",
+        interaction.member
+      );
+      await ReplyStatusEmbed(StatusEmoji.SUCCESS, status, interaction);
+    } catch (e) {
+      await ReplyStatusEmbed(StatusEmoji.FAIL, e.message, interaction);
+    }
   }
 
   public override registerApplicationCommands(
