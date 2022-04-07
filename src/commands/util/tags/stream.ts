@@ -24,21 +24,15 @@ export class Stream extends Command {
       return;
     }
 
-    try {
-      const status = await interaction.client.radio.subscribeToGenre(
-        station,
-        interaction.member
-      );
-      await ReplyStatusEmbed(StatusEmoji.SUCCESS, status, interaction);
-    } catch (e: any) {
-      await ReplyStatusEmbed(
-        StatusEmoji.FAIL,
-        e.message ?? "Unknown Error",
-        interaction,
-        true
-      );
-      return;
-    }
+    const status = await interaction.client.radio.subscribeToGenre(
+      station,
+      interaction.member
+    );
+    await ReplyStatusEmbed(
+      status.error ? StatusEmoji.FAIL : StatusEmoji.SUCCESS,
+      status.message,
+      interaction
+    );
   }
 
   public override async autocompleteRun(interaction: AutocompleteInteraction) {
@@ -52,7 +46,7 @@ export class Stream extends Command {
     return await interaction.respond(
       stationData.map((value, key) => {
         return {
-          name: `📻${key}`,
+          name: `📻 ${key}`,
           value: key,
         };
       })

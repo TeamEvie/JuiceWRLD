@@ -106,27 +106,41 @@ export class Radio {
     return this.connections.has(guild.id);
   }
 
-  public async subscribeToGenre(genre: string, member: GuildMember) {
+  public async subscribeToGenre(
+    genre: string,
+    member: GuildMember
+  ): Promise<StationSubResponse> {
     const { voice, guild } = member;
 
     if (!voice.channel)
-      throw new Error("You must be in a voice channel to use this command.");
+      return {
+        error: true,
+        message: "You must be in a voice channel to use this command.",
+      };
+
     try {
       if (this.doesConnectionExist(guild)) {
-        throw new Error("Already streaming in this guild.");
-      } else {
-        await this.createConnection(voice.channel);
-        const connection = this.connections.get(guild.id);
-        if (!connection) throw new Error("Connection not found.");
-
-        const radio = this.radios.get(genre);
-        if (!radio) throw new Error("Station not found.");
-
-        connection.subscribe(radio);
-        return `Tuned into ${genre}`;
+        await this.connections.get(guild.id)?.destroy();
+        this.connections.delete(guild.id);
       }
+      await this.createConnection(voice.channel);
+      const connection = this.connections.get(guild.id);
+      if (!connection)
+        return {
+          error: true,
+          message: "Failure to connect to voice channel. Try again?",
+        };
+
+      const radio = this.radios.get(genre);
+      if (!radio) return { error: true, message: "Station not found." };
+
+      connection.subscribe(radio);
+      return { error: false, message: `Tuned into ${genre}` };
     } catch (e: any) {
-      throw new Error(e.message);
+      return {
+        error: true,
+        message: "Failure to connect to voice channel. Try again?",
+      };
     }
   }
 
@@ -141,3 +155,8 @@ export class Radio {
     });
   }
 }
+
+type StationSubResponse = {
+  error: boolean;
+  message: string;
+};
