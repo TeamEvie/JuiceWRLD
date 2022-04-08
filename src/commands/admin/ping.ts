@@ -8,6 +8,7 @@ export class Ping extends Command {
 			name: "ping",
 			aliases: ["pong"],
 			description: "ping pong",
+			preconditions: ["OwnerOnly"],
 		});
 	}
 
