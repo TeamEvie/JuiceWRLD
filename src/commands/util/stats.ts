@@ -5,7 +5,11 @@ import {
   Command,
   RegisterBehavior,
 } from "@sapphire/framework";
-import type { CommandInteraction } from "discord.js";
+import {
+  CommandInteraction,
+  MessageActionRow,
+  MessageButton,
+} from "discord.js";
 
 export class Stats extends Command {
   public override async chatInputRun(interaction: CommandInteraction) {
@@ -47,6 +51,16 @@ export class Stats extends Command {
               })
               .join("")
           ),
+      ],
+      components: [
+        new MessageActionRow().addComponents(
+          new MessageButton()
+            .setURL(
+              "https://discord.com/api/oauth2/authorize?client_id=961142622636871781&permissions=3146752&scope=bot%20applications.commands"
+            )
+            .setLabel("Invite me to your server")
+            .setStyle("LINK")
+        ),
       ],
     });
   }
