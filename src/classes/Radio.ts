@@ -147,6 +147,7 @@ export class Radio {
 			connection.subscribe(radio);
 			return { error: false, message: `Tuned into ${genre}` };
 		} catch (e: any) {
+			console.log(e);
 			return {
 				error: true,
 				message: "Failure to connect to voice channel. Try again?",

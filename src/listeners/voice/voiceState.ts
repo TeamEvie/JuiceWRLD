@@ -10,7 +10,10 @@ export class MessageCreate extends Listener {
 	public async run(_oldState: VoiceState, newState: VoiceState) {
 		if (!newState.channel?.members.size) {
 			const c = newState.client.radio.connections.get(newState.guild.id);
-			if (c) c.destroy();
+			if (c) {
+				c.destroy();
+				newState.client.radio.connections.delete(newState.guild.id);
+			}
 		}
 	}
 }
