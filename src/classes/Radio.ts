@@ -12,6 +12,11 @@ import { Collection, Guild, GuildMember, VoiceBasedChannel } from "discord.js";
 import { glob } from "glob";
 import { Song } from "./Song";
 
+type VoiceConnectionAndChannel = {
+	vc: VoiceConnection;
+	channel: VoiceBasedChannel;
+};
+
 export class Radio {
 	constructor() {
 		console.log(`
@@ -21,7 +26,7 @@ export class Radio {
 		this.getReady();
 	}
 
-	public connections = new Collection<string, VoiceConnection>();
+	public connections = new Collection<string, VoiceConnectionAndChannel>();
 	public queues = new Collection<string, Song[]>();
 	public radios = new Collection<string, AudioPlayer>();
 	public nowPlaying = new Collection<string, Song>();
@@ -86,7 +91,7 @@ export class Radio {
 			guildId: channel.guild.id,
 			adapterCreator: channel.guild.voiceAdapterCreator,
 		});
-		this.connections.set(channel.guildId, connection);
+		this.connections.set(channel.guildId, { vc: connection, channel });
 		connection.on(
 			VoiceConnectionStatus.Disconnected,
 			async (oldState, newState) => {
@@ -130,7 +135,7 @@ export class Radio {
 
 		try {
 			if (this.doesConnectionExist(guild)) {
-				await this.connections.get(guild.id)?.destroy();
+				await this.connections.get(guild.id)?.vc.destroy();
 				this.connections.delete(guild.id);
 			}
 			await this.createConnection(voice.channel);
@@ -144,7 +149,7 @@ export class Radio {
 			const radio = this.radios.get(genre);
 			if (!radio) return { error: true, message: "Station not found." };
 
-			connection.subscribe(radio);
+			connection.vc.subscribe(radio);
 			return { error: false, message: `Tuned into ${genre}` };
 		} catch (e: any) {
 			console.log(e);

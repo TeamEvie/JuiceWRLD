@@ -7,12 +7,20 @@ import type { VoiceState } from "discord.js";
 	event: Events.VoiceStateUpdate,
 })
 export class MessageCreate extends Listener {
-	public async run(_oldState: VoiceState, newState: VoiceState) {
-		if (!newState.channel?.members.size) {
-			const c = newState.client.radio.connections.get(newState.guild.id);
+	public async run(oldState: VoiceState, _newState: VoiceState) {
+		if (!oldState.guild.me) return;
+
+		if (
+			oldState.channel?.members.size === 1 &&
+			oldState.client.radio.connections.get(oldState.guild.id)?.channel
+				.id === oldState.channelId
+		) {
+			console.log(oldState.channel?.members.size);
+
+			const c = oldState.client.radio.connections.get(oldState.guild.id);
 			if (c) {
-				c.destroy();
-				newState.client.radio.connections.delete(newState.guild.id);
+				c.vc.destroy();
+				oldState.client.radio.connections.delete(oldState.guild.id);
 			}
 		}
 	}
