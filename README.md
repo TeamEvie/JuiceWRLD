@@ -1,4 +1,4 @@
-[![Discord Bots](https://top.gg/api/widget/upvotes/961142622636871781.svg)(https://top.gg/bot/961142622636871781)
+[![Discord Bots](https://top.gg/api/widget/upvotes/961142622636871781.svg)(https://top.gg/bot/961142622636871781)]
 ### Juice WRLD makes listening to unreleased leaks on Discord easy!
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/twisttaan/JuiceWRLD?style=social)[![Continuous Delivery](https://github.com/twisttaan/JuiceWRLD/actions/workflows/cd.yml/badge.svg)](https://github.com/twisttaan/JuiceWRLD/actions/workflows/cd.yml)
